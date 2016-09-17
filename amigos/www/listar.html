@@ -1,0 +1,106 @@
+﻿<!-- O Phonegap é uma plataforma gratuita de desenvolvimento mobile da adobe.
+    Existe desde 2011. Com ela conseguimos criar aplicativos para até 9 plataformas diferentes
+    (Android, iOS, Windows Phone, BlackBerry, Tizen, Bada, WebOS, Firefox OS, Amazon OS).
+    Fazemos um unico codigo e rodamos em 9 plataformas diferentes.
+    Basicamente fazemos 1 SITE (HTML, CSS e Javascript) que vai virar APP.
+    Internamente dentro do phonegap é executado o cordova.
+    O CORDOVA é o compilador do phonegap (motor de execução) -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="utf-8" />
+    <!-- Arquivo de estilos -->
+    <link href="css/ratchet.min.css" rel="stylesheet" />
+</head>
+<body>
+    <!-- Barra de titulo -->
+    <header class="bar bar-nav">
+        <h1 class="title">Amigos</h1>
+    </header>
+
+    <section>
+        <div style="margin-top: 50px;">
+            <ul class="table-view">
+                <li class="table-view-cell" onclick="setarMapa('rua aroaba')">
+                    <a class="navigate-right">
+                        Zina da Silva
+                    </a>
+                </li>
+                <li class="table-view-cell" onclick="setarMapa('Rua Venâncio Aires, 781')">
+                    <a class="navigate-right">
+                        Anderson Silva
+                    </a>
+                </li>
+                <li class="table-view-cell" onclick="setarMapa('Raimundo pereira de magalhaes')">
+                    <a class="navigate-right">
+                        Bozina da Silva
+                    </a>
+                </li>
+            </ul>
+
+            <div id="mapa" style="border: 1px solid #000; width: 100%; height: 300px;">
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Menu inferior -->
+    <footer>
+        <nav class="bar bar-tab">
+            <a class="tab-item" href="index.html">
+                <span class="icon icon-home"></span>
+                <span class="tab-label">Home</span>
+            </a>
+            <a class="tab-item active" href="listar.html" s>
+                <span class="icon icon-person"></span>
+                <span class="tab-label">Listar</span>
+            </a>
+            <a class="tab-item" href="cadastrar.html">
+                <span class="icon icon-star-filled"></span>
+                <span class="tab-label">Cadastrar</span>
+            </a>
+        </nav>
+    </footer>
+
+    <!-- Manipulação de campos -->
+    <script src="js/jquery-3.1.0.min.js"></script>
+    <!-- Importamos o script de manipulação de mapas do google -->
+    <script src="http://maps.google.com/maps/api/js?key=AIzaSyDhEK-uOQxS11xAn6qztfEkiOGiedcv7vg"></script>
+    <!-- As APIS do google são online (não funcionam offline) -->
+
+    <script>
+        function setarMapa(rua)
+        {
+            var localizador = new google.maps.Geocoder();
+            localizador.geocode({ "address": rua }, function (registro, status) {
+                if(status == google.maps.GeocoderStatus.OK)
+                {
+                    var lat = registro[0].geometry.location.lat();
+                    var long = registro[0].geometry.location.lng();
+
+                    // Pra montar mapas, é sempre latitude e longitude.
+                    // Endereço não serve
+                    // Montamos o mapa manualmente via apis do google maps
+                    // zoom: 1 a 21 - proximidade
+                    // center: endereço do centro do mapa
+                    // mapTypeId: tipo de mapa
+                    var configuracoes = {
+                        zoom: 17,
+                        center: new google.maps.LatLng(lat, long),
+                        mapTypeId: google.maps.MapTypeId.SATELLITE
+                    };
+
+                    // Montamos o mapa com as configurações acima
+                    var mapa = new google.maps.Map($('#mapa').get(0), configuracoes);
+
+                    new google.maps.Marker({
+                        map: mapa,
+                        position: new google.maps.LatLng(lat, long)
+                    });
+                }
+            });
+        }
+    </script>
+</body>
+</html>

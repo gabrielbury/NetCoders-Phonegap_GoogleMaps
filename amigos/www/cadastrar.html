@@ -1,0 +1,107 @@
+﻿<!-- O Phonegap é uma plataforma gratuita de desenvolvimento mobile da adobe.
+    Existe desde 2011. Com ela conseguimos criar aplicativos para até 9 plataformas diferentes
+    (Android, iOS, Windows Phone, BlackBerry, Tizen, Bada, WebOS, Firefox OS, Amazon OS).
+    Fazemos um unico codigo e rodamos em 9 plataformas diferentes.
+    Basicamente fazemos 1 SITE (HTML, CSS e Javascript) que vai virar APP.
+    Internamente dentro do phonegap é executado o cordova.
+    O CORDOVA é o compilador do phonegap (motor de execução) -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="utf-8" />
+    <!-- Arquivo de estilos -->
+    <link href="css/ratchet.min.css" rel="stylesheet" />
+</head>
+<body>
+    <!-- Barra de titulo -->
+    <header class="bar bar-nav">
+        <h1 class="title">Amigos</h1>
+    </header>
+
+    <!-- Seção de conteúdo -->
+    <section>
+        <div style="margin-top: 50px;">
+            <form class="input-group">
+                <input id="nome" type="text" placeholder="Nome">
+                <input id="email" type="email" placeholder="E-mail">
+                <input id="endereco" type="text" placeholder="Endereço">
+                <button type="button" class="btn btn-primary btn-block" id="exibir">Exibir mapa</button>
+            </form>
+
+            <iframe id="mapa" style="border: 1px solid #000; width: 100%;"></iframe>
+        </div>
+    </section>
+
+    <!-- Menu inferior -->
+    <footer>
+        <nav class="bar bar-tab">
+            <a class="tab-item" href="index.html">
+                <span class="icon icon-home"></span>
+                <span class="tab-label">Home</span>
+            </a>
+            <a class="tab-item" href="listar.html" s>
+                <span class="icon icon-person"></span>
+                <span class="tab-label">Listar</span>
+            </a>
+            <a class="tab-item active" href="cadastrar.html">
+                <span class="icon icon-star-filled"></span>
+                <span class="tab-label">Cadastrar</span>
+            </a>
+        </nav>
+    </footer>
+
+    <!-- Importamos o script de manipulação de mapas do google -->
+    <script src="http://maps.google.com/maps/api/js?key=AIzaSyDhEK-uOQxS11xAn6qztfEkiOGiedcv7vg"></script>
+    <!-- As APIS do google são online (não funcionam offline) -->
+
+    <!-- Manipulação de campos -->
+    <script src="js/jquery-3.1.0.min.js"></script>
+
+    <!--Começaremos a programação das telas
+        Assim que abrir a tela, temos que capturar a geolocalização do usuário. 
+        Temos que saber onde ele está. -->
+    <script>
+        var lat, long;
+        navigator.geolocation.getCurrentPosition(function (dados) {
+            // Após capturar os dados geográficos, 
+            // armazenamos em variáveis.
+            lat = dados.coords.latitude;
+            long = dados.coords.longitude;
+
+            // O maximo que o aparelho retorna é lat e long.
+            // Se quisermos saber o endereço, devemos fazer o geocode reverso
+            // Trazer o endereço a partir de lat e long
+            
+            //Inicializamos o serviço de geocode
+            var localizador = new google.maps.Geocoder();
+            
+            //Criamos um objeto de geolocalização
+            var local = new google.maps.LatLng(lat, long);
+
+            //Acionamos o comando que retorna o endereço
+            // Vai pra nuvem e retorna onde o cara está
+            // 01 Objeto de pesquisa (latLng ou address)
+            // 02 Função de tratamento de SUCESSO ou ERRO
+            localizador.geocode({ "latLng": local }, function (registro, status)
+            {
+                // Verificamos se deu sucesso
+                if(status == google.maps.GeocoderStatus.OK)
+                {
+                    $('#endereco').val(registro[0].formatted_address);
+                }
+            });
+        });
+
+        // Mapeamos o click do botao exibir
+        $('#exibir').click(function () {
+            // Temos que navegar no site do google maps, pra mostrar o mapa no iframe
+            // Mapa embutido
+            var url = "http://maps.google.com?q=" + lat + "," + long + "&output=embed";
+
+            // Setamos a url no iframe
+            $('#mapa').attr('src', url);
+        })
+    </script>
+</body>
+</html>
